@@ -184,6 +184,9 @@ class Team(models.Model):
         """
         Determine if this workspace can be set to private based on billing status.
         """
+        if not settings.BILLING:
+            return True
+
         plan = (self.billing_plan or "").strip().lower()
         if not plan:
             return False
