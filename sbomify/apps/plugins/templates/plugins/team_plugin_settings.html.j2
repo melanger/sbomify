@@ -36,7 +36,7 @@
                 <div class="space-y-3">
                     {% for plugin in plugin_settings.available_plugins %}
                         <div class="bg-background/50 border border-border rounded-xl p-4 {% if plugin.requires_upgrade %}opacity-50 grayscale{% endif %}"
-                             x-data="{ enabled: {{ 'true' if plugin.name in plugin_settings.enabled_plugins and plugin.has_access else 'false' }} }">
+                             x-data="{ enabled: {% if plugin.name in plugin_settings.enabled_plugins and plugin.has_access %}true{% else %}false{% endif %} }">
                             <div class="flex items-start gap-4">
                                 <div class="w-10 h-10 rounded-lg {% if plugin.requires_upgrade %}bg-border/50{% else %}bg-primary/10{% endif %} flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-puzzle-piece {% if plugin.requires_upgrade %}text-text-muted{% else %}text-primary{% endif %}"></i>
