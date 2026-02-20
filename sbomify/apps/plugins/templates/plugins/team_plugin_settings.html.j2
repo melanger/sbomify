@@ -33,19 +33,8 @@
               hx-indicator="#plugin-settings-spinner">
             {% csrf_token %}
             {% if plugin_settings.available_plugins %}
-                {% set ns = namespace(shown_upgrade_divider=false) %}
                 <div class="space-y-3">
                     {% for plugin in plugin_settings.available_plugins %}
-                        {% if plugin.requires_upgrade and not ns.shown_upgrade_divider %}
-                            {% set ns.shown_upgrade_divider = true %}
-                            <div class="flex items-center gap-3 pt-3 pb-1">
-                                <div class="flex-1 border-t border-border"></div>
-                                <span class="text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
-                                    <i class="fas fa-lock mr-1"></i>Requires Plan Upgrade
-                                </span>
-                                <div class="flex-1 border-t border-border"></div>
-                            </div>
-                        {% endif %}
                         <div class="bg-background/50 border border-border rounded-xl p-4 {% if plugin.requires_upgrade %}opacity-50 grayscale{% endif %}"
                              x-data="{ enabled: {{ 'true' if plugin.name in plugin_settings.enabled_plugins and plugin.has_access else 'false' }} }">
                             <div class="flex items-start gap-4">
@@ -91,9 +80,8 @@
                                                                 id="plugin_config_{{ plugin.name }}_{{ field.key }}"
                                                                 class="tw-form-select">
                                                             <option value="">-- Default --</option>
-                                                            {% set current_value = plugin_settings.plugin_configs.get(plugin.name, {}).get(field.key, '') %}
                                                             {% for choice in field.choices %}
-                                                                {% if current_value == choice.value %}
+                                                                {% if plugin_settings.plugin_configs.get(plugin.name, {}).get(field.key, '') == choice.value %}
                                                                     <option value="{{ choice.value }}" selected>{{ choice.label }}</option>
                                                                 {% else %}
                                                                     <option value="{{ choice.value }}">{{ choice.label }}</option>
