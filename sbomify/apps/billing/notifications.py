@@ -4,6 +4,7 @@ Module for billing-related UI notifications
 
 from datetime import datetime
 
+from django.conf import settings
 from django.db import transaction
 from django.http import HttpRequest
 from django.urls import reverse
@@ -158,6 +159,9 @@ def check_downgrade_limit_exceeded(team: Team) -> NotificationSchema | None:
 
 def check_community_upgrade(team: Team) -> NotificationSchema | None:
     """Check if community plan user should upgrade to paid plan"""
+    if not settings.BILLING:
+        return None
+
     # Show upgrade notification if billing_plan is None or "community"
     billing_plan = team.billing_plan
 

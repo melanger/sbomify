@@ -1,5 +1,6 @@
 """Component identifiers management views."""
 
+from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views import View
@@ -82,7 +83,7 @@ class ComponentIdentifiersView(View):
 
         current_team = request.session.get("current_team", {})
         billing_plan = current_team.get("billing_plan", "community")
-        is_feature_allowed = billing_plan != "community"
+        is_feature_allowed = not settings.BILLING or billing_plan != "community"
         has_crud_permissions = component.get("has_crud_permissions", False)
         can_manage = has_crud_permissions and is_feature_allowed
 

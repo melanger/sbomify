@@ -184,6 +184,9 @@ class Team(models.Model):
         """
         Determine if this workspace can be set to private based on billing status.
         """
+        if not settings.BILLING:
+            return True
+        
         plan = (self.billing_plan or "").strip().lower()
         if not plan:
             return False
@@ -233,7 +236,7 @@ class Team(models.Model):
         is_new = self.pk is None
         current_plan = (self.billing_plan or "").strip().lower()
 
-        is_paid_plan = bool(current_plan) and current_plan != Team.Plan.COMMUNITY
+        is_paid_plan = (not settings.BILLING) or (bool(current_plan) and current_plan != Team.Plan.COMMUNITY)
 
         # Default paid plans to private only at creation time (opt-in later for upgrades)
         if is_new and is_paid_plan and self.is_public:
