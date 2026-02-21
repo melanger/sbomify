@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from django.conf import settings
 from django.http import HttpRequest
 
 from sbomify.apps.core.apis import (
@@ -44,7 +45,7 @@ def build_identifiers_context(request: HttpRequest, product_id: str) -> ServiceR
 
     current_team = request.session.get("current_team", {})
     billing_plan = current_team.get("billing_plan", "community")
-    is_feature_allowed = billing_plan != "community"
+    is_feature_allowed = not settings.BILLING or billing_plan != "community"
     has_crud_permissions = product.get("has_crud_permissions", False)
     can_manage = has_crud_permissions and is_feature_allowed
 

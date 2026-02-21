@@ -144,6 +144,9 @@ def get_app_hostname() -> str:
 
 def plan_has_custom_domain_access(billing_plan: str | None) -> bool:
     """Check if the billing plan allows custom domain feature."""
+    if not settings.BILLING:
+        return True
+
     if not billing_plan:
         return False
 

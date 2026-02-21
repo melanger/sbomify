@@ -2,6 +2,7 @@ import logging
 from decimal import Decimal
 
 from django.apps import apps
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -88,7 +89,7 @@ class BillingPlan(models.Model):
     @property
     def has_ntia_compliance(self) -> bool:
         """Check if this plan includes NTIA Minimum Elements compliance checking."""
-        return self.key in ["business", "enterprise"]
+        return not settings.BILLING or self.key in ["business", "enterprise"]
 
     @property
     def has_vulnerability_scanning(self) -> bool:
@@ -102,7 +103,7 @@ class BillingPlan(models.Model):
     @property
     def has_dependency_track_access(self) -> bool:
         """Check if this plan includes Dependency Track access."""
-        return self.key in ["business", "enterprise"]
+        return not settings.BILLING or self.key in ["business", "enterprise"]
 
     @property
     def allows_unlimited_users(self) -> bool:
@@ -112,7 +113,7 @@ class BillingPlan(models.Model):
     @property
     def has_custom_domain_access(self) -> bool:
         """Check if this plan includes custom domain feature."""
-        return self.key in ["business", "enterprise"]
+        return not settings.BILLING or self.key in ["business", "enterprise"]
 
     @property
     def monthly_price_discounted(self) -> Decimal | None:
@@ -318,4 +319,4 @@ class BillingPlan(models.Model):
     @property
     def has_fda_compliance(self) -> bool:
         """Check if this plan includes FDA Medical Device Cybersecurity compliance checking."""
-        return self.key in ["business", "enterprise"]
+        return not settings.BILLING or self.key in ["business", "enterprise"]
